@@ -4,9 +4,13 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 
 public class Main extends Application {
     @Override
@@ -16,6 +20,7 @@ public class Main extends Application {
         System.out.println("hello world!!!");
         System.out.println("heoooo");
         Parent root = FXMLLoader.load(getClass().getResource("startMenu.fxml"));
+
         Scene scene = new Scene(root);
         stage.setTitle("Hello!");
         stage.setHeight(420);

@@ -40,7 +40,15 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
-        </dependency>  </dependencies>
+        </dependency>
+
+            <!-- Other dependencies -->
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-media</artifactId>
+                <version>16</version>
+            </dependency>
+       </dependencies>
 
     <build>
         <plugins>

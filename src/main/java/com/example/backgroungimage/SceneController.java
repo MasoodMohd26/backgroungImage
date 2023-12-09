@@ -10,14 +10,19 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.*;
+import java.util.Random;
 
 public class SceneController {
     Rotate rotate;
@@ -33,16 +38,23 @@ public class SceneController {
     private Rectangle myStick;
     @FXML
     private Text myScore;
+    @FXML
+    private ImageView cherry;
     private Stage stage;
     private Scene scene;
     private Parent root;
     private boolean spaceBarPressed = false;
     private int myHighScore;
 
+
     @FXML
     private AnchorPane anchorPane;
     private boolean isAlive;
     private int aliveCnt = 0;
+    Rectangle pillar;
+    private boolean isSPressed = false;
+    RotateTransition flipTransition;
+    Timeline heroDrops;
 
 
     //    public void createStick() throws IOException {
@@ -117,14 +129,25 @@ public class SceneController {
 
     private Rectangle createPillar() {
         // Create a new rectangle (pillar)
-        Rectangle pillar = new Rectangle(20, 150, Color.BLUE); // Adjust dimensions as needed
+        pillar = new Rectangle(20, 150, Color.BLUE); // Adjust dimensions as needed
         double min = 50+myPillar2.getWidth();
         double max = 300;
         double min_w = 15;
         double max_w = 100;
         double randomX = Math.random() * (max - min) + min;
         double randomX1 = Math.random() * (max_w - min_w) + min_w;
+//        cherry = new ImageView("D:\\Coding\\Java\\javaPractice\\backgroungImage\\src\\main\\resources\\com\\example\\backgroungimage\\cherry-clipart-animated-6-removebg-preview.png");
+//        cherry.setLayoutX(1);
+       // anchorPane.getChildren().add(cherry);
+//        cherry.setFitHeight(20);
+//        cherry.setFitWidth(20);
+        double minch = 10+myPillar2.getWidth();
+        double maxch = myPillar2.getLayoutX()+randomX-30;
+//       double randomcherry = Math.random()*(maxch-minch)+minch;
+
         pillar.setLayoutX(myPillar2.getLayoutX() + randomX); // Adjust the initial X position as needed
+//        cherry.setLayoutX(myPillar2.getLayoutX() + randomcherry);
+//        cherry.setLayoutY(291);
         pillar.setLayoutY(281); // Adjust the initial Y position as needed
         pillar.setWidth(randomX1);
 
@@ -145,6 +168,7 @@ public class SceneController {
         }
 
         heroMarching.setOnFinished(event1 -> {
+            cherry.setOpacity(0);
             myScore.setText(Integer.toString(aliveCnt));
             if (isAlive) {
                 myStick.setOpacity(0);
@@ -153,6 +177,12 @@ public class SceneController {
                 pullBack();
             }
             else{
+                Media sound = new Media(getClass().getResource("GameOverMusic.mp3").toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setCycleCount(1); // Loop indefinitely
+        MediaView mediaView=new MediaView();
+        mediaView.setMediaPlayer(mediaPlayer);
+        mediaPlayer.play();
                 Timeline heroFalling = new Timeline(new KeyFrame(Duration.millis(500),new KeyValue(myStickHero.layoutYProperty(),myStickHero.getLayoutY()+130)));
                 heroFalling.play();
                 Timeline stickFalling = new Timeline(new KeyFrame(Duration.millis(10),f->{
@@ -173,6 +203,7 @@ public class SceneController {
         });
           heroMarching.play();
     }
+
     public void pullBack() {
 
 
@@ -195,11 +226,12 @@ public class SceneController {
         KeyValue keyValuePillar1 = new KeyValue(myPillar1.layoutXProperty(), myPillar1.getLayoutX() - distance);
         KeyValue keyValuePillar2 = new KeyValue(myPillar2.layoutXProperty(), myPillar2.getLayoutX() - distance);
         KeyValue keyValueStickHero = new KeyValue(myStickHero.layoutXProperty(), myStickHero.getLayoutX() - distance);
+        KeyValue keyValueCherry = new KeyValue(cherry.layoutXProperty(),cherry.getLayoutX()-distance);
 
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(2),
                 keyValuePillar1,
                 keyValuePillar2,
-                keyValueStickHero
+                keyValueStickHero,keyValueCherry
         );
 
         // Create the Timeline
@@ -214,6 +246,21 @@ public class SceneController {
             System.out.println("y coordinate of my :"+myStick.getLayoutY());
             myStick.setLayoutY(myPillar1.getLayoutY()-myStick.getHeight()); myStick.setOpacity(1);
             System.out.println("Pullback animation finished!");
+//            cherry = new ImageView("D:\\Coding\\Java\\javaPractice\\backgroungImage\\src\\main\\resources\\com\\example\\backgroungimage\\cherry-clipart-animated-6-removebg-preview.png");
+//            anchorPane.getChildren().add(cherry);
+//            cherry.setFitHeight(20);
+//            cherry.setFitWidth(20);
+//            double randomcherry = Math.random();
+            cherry.setOpacity(1);
+            double xMin = myPillar1.getLayoutX()+myPillar1.getWidth() + 5;
+            double xMax = myPillar2.getLayoutX() - 5;
+            Random random = new Random();
+            double bc = random.nextDouble(xMin, xMax + 1);
+            cherry.setLayoutX(bc);
+
+
+//            cherry.setLayoutX(myPillar1.getLayoutX() + myPillar1.getWidth() + randomcherry*(myPillar1.getLayoutX() + myPillar1.getWidth()-myPillar2.getLayoutX()));
+            cherry.setLayoutY(291);
         });
 
         // Play the Timeline
@@ -317,6 +364,13 @@ public class SceneController {
                 myStick.setOpacity(1);
                 increaseHeightTimeline.play();
             }
+            else if(event.getCode() == KeyCode.UP){
+
+
+            }
+            else if(event.getCode() == KeyCode.DOWN){
+
+            }
         });
 
         anchorPane.setOnKeyReleased(event -> {
@@ -341,63 +395,7 @@ public class SceneController {
 //                TranslateTransition translateTransition1 = new TranslateTransition(Duration.seconds(2), myPillar1);
 //                translateTransition1.setByX(-1*d);
 //                TranslateTransition translateTransition2 = new TranslateTransition(Duration.seconds(2), myPillar2);
-//                translateTransition2.setByX(-1*d);
-//                TranslateTransition translateTransitionHeroBack = new TranslateTransition(Duration.seconds(2), myStickHero);
-//                                translateTransitionHeroBack.setByX(-1*d);
-//                translateTransitionHeroBack.setOnFinished(event1 -> {
-//                    antiRotateStick();
-////                    movePillar2();
-////                    antiRotateStick();
-////                    myStick.setLayoutX(myPillar1.getLayoutX()+myPillar1.getWidth());
-////                    myStick.setLayoutY(myPillar1.getLayoutY());
-////                    myStick.setHeight(50);
-//                });
-
-//                Timeline heroMarching = new Timeline(
-//                        new KeyFrame(Duration.seconds(2),
-//                                new KeyValue(myStickHero.layoutXProperty(), myPillar2.getLayoutX() + myPillar2.getWidth() - 25)
-//                        )
-//                );
 //
-//                heroMarching.setOnFinished(event1 -> {
-//                    System.out.println("Pillar height:" + myPillar2.getLayoutY() + myPillar2.getY());
-//                    rotate.setAngle(0);
-//                    pullBack();
-//                });
-//
-//                heroMarching.play();
-//                TranslateTransition translateTransitionHero = new TranslateTransition(Duration.seconds(2), myStickHero);
-//                System.out.println("before:"+myStickHero.getLayoutX());
-//
-//                translateTransitionHero.setOnFinished(event1 -> {
-//                    System.out.println("Pillar height:"+myPillar2.getLayoutY()+myPillar2.getY());
-//                    rotate.setAngle(0);
-//                    pullBack();
-
-
-                // Play the second and third transitions after the first one finishes
-//                    translateTransition1.play();
-//                    translateTransition2.play();
-//                    translateTransitionHeroBack.play();
-//                    duplicatePillar1ToPillar2();
-//                    myStick.setLayoutX(myPillar1.getLayoutX()+myPillar1.getWidth());
-                // You can also add other actions or animations here if needed
-//                    rotateStick();
-//                    myStick.setOpacity(0);
-
-////                translateTransitionHeroBack.setByX(d);
-//
-////                translateTransition2.setOnFinished(e -> {
-////                    rotateStick();
-////                });
-//
-//                // Set the number of cycles (Animation.INDEFINITE for infinite)
-//                translateTransitionHero.setCycleCount(1);
-//
-//                // Play the translation animation
-//
-////                translateTransition1.play();
-////                translateTransition2.play();
 //
 //
                 rotateStick();
@@ -412,7 +410,75 @@ public class SceneController {
 //                myStick.setOpacity(0);
 
             }
+            else if (event.getCode() == KeyCode.UP){
+                isSPressed=false;
+                flipTransition = new RotateTransition(Duration.seconds(0.1), myStickHero);
+                flipTransition.setAxis(Rotate.X_AXIS);
+                flipTransition.setByAngle(-180); // Adjust the angle as needed
+                heroDrops = new Timeline(new KeyFrame(Duration.millis(100),new KeyValue(myStickHero.layoutYProperty(),myStickHero.getLayoutY()-35)));
+                heroDrops.setCycleCount(1);
+                heroDrops.play();
+                flipTransition.play();
+
+            }
+            else if (event.getCode() == KeyCode.DOWN){
+                flipTransition = new RotateTransition(Duration.seconds(0.1), myStickHero);
+                flipTransition.setAxis(Rotate.X_AXIS);
+                flipTransition.setByAngle(180); // Adjust the angle as needed
+
+                heroDrops = new Timeline(new KeyFrame(Duration.millis(100),new KeyValue(myStickHero.layoutYProperty(),myStickHero.getLayoutY()+35)));
+                heroDrops.setCycleCount(1);
+                heroDrops.play();
+                flipTransition.play();
+            }
         });
+
+    }
+
+    //    private void increaseHeight(double initialHeight, double maxHeight) {
+//        Timeline timeline = new Timeline(
+//                new KeyFrame(Duration.millis(20), e -> {
+//                    // Check if the maximum height is reached
+//                    if (myStick.getHeight() < maxHeight) {
+//                        // Increase the height
+//                        myStick.setHeight(myStick.getHeight() + 1);
+//                    }
+//                })
+//        );
+//
+//        // Set the cycle count to indefinite to keep increasing the height until the key is released
+//        timeline.setCycleCount(Timeline.INDEFINITE);
+//
+//        timeline.play();
+//    }
+    AnimationTimer collisionTimer = new AnimationTimer(){
+        @Override
+        public void handle(long l) {
+            handleCollision();
+        }
+    };
+    private void handleCollision() {
+
+        Shape playerShape = new Rectangle(myStickHero.getLayoutX(), myStickHero.getLayoutY(), myStickHero.getBoundsInParent().getWidth(), myStickHero.getBoundsInParent().getHeight());
+        Shape pillar2Shape = new Rectangle(myPillar2.getLayoutX(), myPillar2.getLayoutY(), myPillar2.getWidth(), myPillar2.getHeight());
+
+        if (playerShape.getBoundsInParent().intersects(pillar2Shape.getBoundsInParent())) {
+            System.out.println("PLAYER COLLIDES WITH PILLAR !!!!");
+            collisionTimer.stop();
+            Timeline heroFalling = new Timeline(new KeyFrame(Duration.millis(500), new KeyValue(myStickHero.layoutYProperty(), myStickHero.getLayoutY() + 130)));
+            heroFalling.play();
+            Timeline stickFalling = new Timeline(new KeyFrame(Duration.millis(10), f -> stickDown(rotate)));
+            stickFalling.setCycleCount(90);
+            stickFalling.play();
+            stickFalling.setOnFinished(e -> {
+                try {
+                    switchToGameOver(e);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+
+        }
     }
 
     //    private void increaseHeight(double initialHeight, double maxHeight) {
@@ -436,6 +502,17 @@ public class SceneController {
     {
         scene = anchorPane.getScene();
         setupKeyHandlers();
+        String musicFile = "BGMUSIC.mp3";
+        Media sound = new Media(getClass().getResource(musicFile).toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop indefinitely
+        MediaView mediaView=new MediaView();
+        mediaView.setMediaPlayer(mediaPlayer);
+        mediaPlayer.play();
+
+        anchorPane.getChildren().add(mediaView);
+        collisionTimer.start();
+
     }
     //    public void switchToScene2(ActionEvent e) throws IOException
 //    {

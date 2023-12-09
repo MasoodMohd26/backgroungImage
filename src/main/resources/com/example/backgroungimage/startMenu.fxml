@@ -19,14 +19,9 @@
             <Image url="@p1.jpg" />
          </image>
       </ImageView>
-      <Button layoutX="242.0" layoutY="236.0" mnemonicParsing="false" onAction="#switchToScene2" prefHeight="54.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 1000000000;" text="START" textAlignment="CENTER">
+      <Button layoutX="240.0" layoutY="257.0" mnemonicParsing="false" onAction="#switchToScene2" prefHeight="110.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 1000000000;" text="START" textAlignment="CENTER">
          <font>
-            <Font name="Algerian" size="20.0" />
-         </font>
-      </Button>
-      <Button layoutX="242.0" layoutY="307.0" mnemonicParsing="false" onAction="#switchToScene2" prefHeight="54.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 1000000000;" text="Settings" textAlignment="CENTER">
-         <font>
-            <Font name="Algerian" size="20.0" />
+            <Font name="Algerian" size="24.0" />
          </font>
       </Button>
    </children>

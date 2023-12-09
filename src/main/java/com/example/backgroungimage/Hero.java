@@ -1,22 +1,24 @@
 package com.example.backgroungimage;
 
+import javafx.fxml.FXML;
+import javafx.scene.image.ImageView;
 
+//Singleton class is being used here as we need only once instance of Hero to be there in the game.
 public class Hero extends GameObject{
+    private static Hero stickHero = null;
     private boolean isAlive;
-    private int height;
-    private double speed;
+    private double height;
 
-    public Hero(int x, int y, boolean isAlive, int height, double speed) {
+    public static Hero getInstance(double x,double y,boolean isAlive,double height){
+        if (stickHero==null){
+            stickHero = new Hero(x,y,isAlive,height);
+        }
+        return stickHero;
+    }
+    Hero(double x, double y, boolean isAlive, double height) {
         super(x, y);
         this.isAlive = isAlive;
         this.height = height;
-        this.speed = speed;
-    }
-
-    public Hero(boolean isAlive, int height, double speed) {
-        this.isAlive = isAlive;
-        this.height = height;
-        this.speed = speed;
     }
 
     public boolean isAlive() {
@@ -27,7 +29,7 @@ public class Hero extends GameObject{
         isAlive = alive;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
@@ -35,15 +37,9 @@ public class Hero extends GameObject{
         this.height = height;
     }
 
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
     public void move()
     {
 
     }
+
 }

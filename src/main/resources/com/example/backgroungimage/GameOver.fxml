@@ -49,7 +49,7 @@
             <Font name="Chiller" size="37.0" />
          </font>
       </Text>
-      <Button layoutX="201.0" layoutY="260.0" mnemonicParsing="false" onAction="#switchToHome" prefHeight="40.0" prefWidth="179.0" style="-fx-background-radius: 11; -fx-background-color: white;" text="Revive">
+      <Button layoutX="201.0" layoutY="260.0" mnemonicParsing="false" onAction="#revive" prefHeight="40.0" prefWidth="179.0" style="-fx-background-radius: 11; -fx-background-color: white;" text="Revive">
          <font>
             <Font name="Algerian" size="22.0" />
          </font>

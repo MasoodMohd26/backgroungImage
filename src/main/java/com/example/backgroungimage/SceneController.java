@@ -27,6 +27,7 @@ import java.util.Random;
 public class SceneController {
     Rotate rotate;
     Timeline timeline;
+    private boolean stickLock=true;
 
     @FXML
     private ImageView myStickHero;
@@ -50,7 +51,7 @@ public class SceneController {
     @FXML
     private AnchorPane anchorPane;
     private boolean isAlive;
-    private int aliveCnt = 0;
+    private int aliveCnt;
     Rectangle pillar;
     private boolean isSPressed = false;
     RotateTransition flipTransition;
@@ -71,17 +72,41 @@ public class SceneController {
 
 
 
-    private static void writeHighScore(int newHighScore) throws IOException {
+    public static void writeHighScore(int newHighScore) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("HScore.txt"))) {
             writer.write(String.valueOf(newHighScore));
         }
     }
-    private static int readHighScore() throws IOException {
+    public static int readHighScore() throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader("HScore.txt"))) {
             String line = reader.readLine();
             return (line != null) ? Integer.parseInt(line) : 0;
         }
     }
+    public static void writeCherryCnt(int chcnt) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\hp\\FinalAttack\\backgroungImage\\CherryCnt.txt"))) {
+            writer.write(String.valueOf(chcnt));
+        }
+    }
+    public static int readCherryCnt() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\hp\\FinalAttack\\backgroungImage\\CherryCnt.txt"))) {
+            String line = reader.readLine();
+            return (line != null) ? Integer.parseInt(line) : 0;
+        }
+    }
+
+    public static void writeScore(int chcnt) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\hp\\FinalAttack\\backgroungImage\\Score.txt"))) {
+            writer.write(String.valueOf(chcnt));
+        }
+    }
+    public static int readScore() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\hp\\FinalAttack\\backgroungImage\\Score.txt"))) {
+            String line = reader.readLine();
+            return (line != null) ? Integer.parseInt(line) : 0;
+        }
+    }
+
 
     public static int updateHighScore(int currentScore) {
         int highScore = 0;
@@ -112,6 +137,7 @@ public class SceneController {
 
     public void switchToGameOver(ActionEvent e) throws IOException
     {
+
 //        Parent root = FXMLLoader.load(getClass().getResource("GameOver.fxml"));
 
         myHighScore = updateHighScore(aliveCnt);
@@ -184,6 +210,7 @@ public class SceneController {
                 rotate.setAngle(0);
                 if (isCherry){
                     cherryCount++;
+                    myCherryCnt.setText(Integer.toString(cherryCount));
                 }
                 isCherry=false;
                 pullBack();
@@ -195,14 +222,15 @@ public class SceneController {
         MediaView mediaView=new MediaView();
         mediaView.setMediaPlayer(mediaPlayer);
         mediaPlayer.play();
-                Timeline heroFalling = new Timeline(new KeyFrame(Duration.millis(500),new KeyValue(myStickHero.layoutYProperty(),myStickHero.getLayoutY()+130)));
+                Timeline heroFalling = new Timeline(new KeyFrame(Duration.millis(500),new KeyValue(myStickHero.layoutYProperty(),myStickHero.getLayoutY()+300)));
                 heroFalling.play();
                 Timeline stickFalling = new Timeline(new KeyFrame(Duration.millis(10),f->{
                     stickDown(rotate);
                 }));
                 stickFalling.setOnFinished(e -> {
                     try {
-
+                        writeCherryCnt(cherryCount);
+                        writeScore(Integer.parseInt(myScore.getText()));
                         switchToGameOver(e);
 
                     } catch (IOException ex) {
@@ -240,7 +268,7 @@ public class SceneController {
         KeyValue keyValueStickHero = new KeyValue(myStickHero.layoutXProperty(), myStickHero.getLayoutX() - distance);
         KeyValue keyValueCherry = new KeyValue(cherry.layoutXProperty(),cherry.getLayoutX()-distance);
 
-        KeyFrame keyFrame = new KeyFrame(Duration.seconds(2),
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(0.5),
                 keyValuePillar1,
                 keyValuePillar2,
                 keyValueStickHero,keyValueCherry
@@ -251,6 +279,7 @@ public class SceneController {
 
         timeline.setOnFinished(event -> {
             System.out.println("Now thread has ended!");
+            stickLock = true;
             myStick.setLayoutX(myPillar1.getLayoutX()+myPillar1.getWidth());
             System.out.println(myPillar2.getLayoutY()+"  "+myStick.getHeight());
             System.out.println(myPillar2.getLayoutY()-myStick.getHeight());
@@ -270,9 +299,11 @@ public class SceneController {
             double bc = random.nextDouble(xMin, xMax + 1);
             cherry.setLayoutX(bc);
 
+            double yMax= myPillar1.getLayoutY()+50;
+            double yMin = myPillar1.getLayoutY()-50;
+            double bc1 = random.nextDouble(yMin, yMax + 1);
+            cherry.setLayoutY(bc1);
 
-//            cherry.setLayoutX(myPillar1.getLayoutX() + myPillar1.getWidth() + randomcherry*(myPillar1.getLayoutX() + myPillar1.getWidth()-myPillar2.getLayoutX()));
-            cherry.setLayoutY(291);
         });
 
         // Play the Timeline
@@ -299,7 +330,7 @@ public class SceneController {
         myStick.getTransforms().add(rotate);
 
         Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(20), e -> {
+                new KeyFrame(Duration.millis(10), e -> {
                     update(rotate);
                 })
         );
@@ -321,7 +352,7 @@ public class SceneController {
             timeline.stop();
         }
     }
-    private void stickDown(Rotate rotate)
+    public void stickDown(Rotate rotate)
     {
         int angle = (int) rotate.getAngle();
         angle ++;
@@ -372,12 +403,13 @@ public class SceneController {
 
         anchorPane.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.A) {
-                spaceBarPressed = true;
-                myStick.setOpacity(1);
-                increaseHeightTimeline.play();
+                if (stickLock) {
+                    spaceBarPressed = true;
+                    myStick.setOpacity(1);
+                    increaseHeightTimeline.play();
+                }
             }
             else if(event.getCode() == KeyCode.UP){
-
 
             }
             else if(event.getCode() == KeyCode.DOWN){
@@ -387,30 +419,32 @@ public class SceneController {
 
         anchorPane.setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.A) {
-                spaceBarPressed = false;
+                if (stickLock) {
+                    spaceBarPressed = false;
 
-                // ht increase stopped
-                increaseHeightTimeline.stop();
-                double distanceNear = myPillar2.getLayoutX() -myPillar1.getWidth()- myPillar1.getLayoutX();
-                double distanceFar = myPillar2.getLayoutX()+myPillar2.getWidth()-(myPillar1.getLayoutX()+myPillar1.getWidth());
-                if (myStick.getHeight()>=distanceNear && myStick.getHeight()<=distanceFar){
-                    isAlive = true;
-                    aliveCnt++;
+                    // ht increase stopped
+                    increaseHeightTimeline.stop();
+                    double distanceNear = myPillar2.getLayoutX() - myPillar1.getWidth() - myPillar1.getLayoutX();
+                    double distanceFar = myPillar2.getLayoutX() + myPillar2.getWidth() - (myPillar1.getLayoutX() + myPillar1.getWidth());
+                    if (myStick.getHeight() >= distanceNear && myStick.getHeight() <= distanceFar) {
+                        isAlive = true;
+                        aliveCnt++;
 //                    myScore.setText(Integer.toString(aliveCnt));
-                    System.out.println(aliveCnt);
-                }
-                else{
-                    isAlive = false;
-                }
+                        System.out.println(aliveCnt);
+                    } else {
+                        isAlive = false;
+                    }
 
-                double d = (myPillar1.getLayoutX() + myPillar1.getWidth() - myStickHero.getLayoutX() -6) + myStick.getHeight();
+                    double d = (myPillar1.getLayoutX() + myPillar1.getWidth() - myStickHero.getLayoutX() - 6) + myStick.getHeight();
 //                TranslateTransition translateTransition1 = new TranslateTransition(Duration.seconds(2), myPillar1);
 //                translateTransition1.setByX(-1*d);
 //                TranslateTransition translateTransition2 = new TranslateTransition(Duration.seconds(2), myPillar2);
 //
 //
 //
-                rotateStick();
+                    rotateStick();
+                    stickLock = false;
+                }
 //                try {
 //                    Thread.sleep(1000);
 //                } catch (InterruptedException e) {
@@ -493,8 +527,11 @@ public class SceneController {
 
         if (playerShape.getBoundsInParent().intersects(pillar2Shape.getBoundsInParent())) {
             System.out.println("PLAYER COLLIDES WITH PILLAR !!!!");
+            if (isAlive) {
+                aliveCnt--;
+            }
             collisionTimer.stop();
-            Timeline heroFalling = new Timeline(new KeyFrame(Duration.millis(500), new KeyValue(myStickHero.layoutYProperty(), myStickHero.getLayoutY() + 130)));
+            Timeline heroFalling = new Timeline(new KeyFrame(Duration.millis(500), new KeyValue(myStickHero.layoutYProperty(), myStickHero.getLayoutY() + 300)));
             heroFalling.play();
             Timeline stickFalling = new Timeline(new KeyFrame(Duration.millis(10), f -> stickDown(rotate)));
             stickFalling.setCycleCount(90);
@@ -529,6 +566,16 @@ public class SceneController {
     @FXML
     public void initialize()
     {
+        try {
+            cherryCount = readCherryCnt();
+            aliveCnt=readScore();
+            myScore.setText(Integer.toString(readScore()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        myCherryCnt.setText(Integer.toString(cherryCount));
+
         scene = anchorPane.getScene();
         setupKeyHandlers();
         String musicFile = "BGMUSIC.mp3";
@@ -564,15 +611,15 @@ public class SceneController {
         stage.show();
 
     }
-    public void SettingsScene(ActionEvent e) throws IOException
-    {
-        Parent root = FXMLLoader.load(getClass().getResource("settings.fxml"));
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-        scene = new Scene (root);
-        stage.setScene(scene);
-        stage.show();
-
-    }
+//    public void SettingsScene(ActionEvent e) throws IOException
+//    {
+//        Parent root = FXMLLoader.load(getClass().getResource("settings.fxml"));
+//        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+//        scene = new Scene (root);
+//        stage.setScene(scene);
+//        stage.show();
+//
+//    }
     //    public void extendStick()
 //    {
 //

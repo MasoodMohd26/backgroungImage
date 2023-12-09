@@ -1,13 +1,17 @@
 package com.example.backgroungimage;
 
 public class Stick extends GameObject{
-    private int height;
+    private double height;
 
-    public int getHeight() {
+    Stick(double x, double y, double height){
+        super(x,y);
+        this.height=height;
+    }
+    public double getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
     public int increaseHt()
@@ -19,4 +23,3 @@ public class Stick extends GameObject{
 
     }
 }
-

@@ -27,7 +27,8 @@ import java.util.Random;
 public class SceneController {
     Rotate rotate;
     Timeline timeline;
-
+    private int cherryCount=0;
+    private boolean isCherry=false;
     @FXML
     private ImageView myStickHero;
     @FXML
@@ -174,6 +175,10 @@ public class SceneController {
                 myStick.setOpacity(0);
                 System.out.println("Pillar height:" + myPillar2.getLayoutY() + myPillar2.getY());
                 rotate.setAngle(0);
+                if (isCherry){
+                    cherryCount++;
+                }
+                isCherry=false;
                 pullBack();
             }
             else{
@@ -206,7 +211,6 @@ public class SceneController {
 
     public void pullBack() {
 
-
         Rectangle newPillar1 = createPillar();
 
         myPillar1.setHeight(myPillar2.getHeight());
@@ -238,7 +242,7 @@ public class SceneController {
         Timeline timeline = new Timeline(keyFrame);
 
         timeline.setOnFinished(event -> {
-            System.out.println("Now thread has ended!");
+            collisionTimer.start();
             myStick.setLayoutX(myPillar1.getLayoutX()+myPillar1.getWidth());
             System.out.println(myPillar2.getLayoutY()+"  "+myStick.getHeight());
             System.out.println(myPillar2.getLayoutY()-myStick.getHeight());
@@ -257,7 +261,6 @@ public class SceneController {
             Random random = new Random();
             double bc = random.nextDouble(xMin, xMax + 1);
             cherry.setLayoutX(bc);
-
 
 //            cherry.setLayoutX(myPillar1.getLayoutX() + myPillar1.getWidth() + randomcherry*(myPillar1.getLayoutX() + myPillar1.getWidth()-myPillar2.getLayoutX()));
             cherry.setLayoutY(291);
@@ -451,6 +454,24 @@ public class SceneController {
 //
 //        timeline.play();
 //    }
+    AnimationTimer cherryEatingTimer = new AnimationTimer(){
+        @Override
+        public void handle(long l){
+            cherryCollision();
+        }
+    };
+    private void cherryCollision(){
+        Shape playerShape = new Rectangle(myStickHero.getLayoutX(), myStickHero.getLayoutY(), myStickHero.getBoundsInParent().getWidth(), myStickHero.getBoundsInParent().getHeight());
+        Shape cherryShape = new Rectangle(cherry.getLayoutX(),cherry.getLayoutY(),cherry.getBoundsInParent().getWidth(),cherry.getBoundsInParent().getHeight());
+
+        if (playerShape.getBoundsInParent().intersects(cherryShape.getBoundsInParent())){
+            isCherry=true;
+            cherry.setOpacity(0);
+            System.out.println("Cherry count: "+cherryCount);
+        }
+
+    }
+
     AnimationTimer collisionTimer = new AnimationTimer(){
         @Override
         public void handle(long l) {
@@ -512,7 +533,7 @@ public class SceneController {
 
         anchorPane.getChildren().add(mediaView);
         collisionTimer.start();
-
+        cherryEatingTimer.start();
     }
     //    public void switchToScene2(ActionEvent e) throws IOException
 //    {

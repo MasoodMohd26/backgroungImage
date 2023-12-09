@@ -25,8 +25,10 @@ import java.io.*;
 import java.util.Random;
 
 public class SceneController {
+
     Rotate rotate;
     Timeline timeline;
+    private boolean stickLock=true;
 
     @FXML
     private ImageView myStickHero;
@@ -124,7 +126,6 @@ public class SceneController {
         g.setGameScore(sc);
         g.setGameHighScore(Integer.toString(myHighScore));
 
-
         // Get the stage from the event's source
         Stage stage = (Stage) anchorPane.getScene().getWindow();
 
@@ -187,6 +188,7 @@ public class SceneController {
                 }
                 isCherry=false;
                 pullBack();
+
             }
             else{
                 Media sound = new Media(getClass().getResource("GameOverMusic.mp3").toString());
@@ -251,6 +253,7 @@ public class SceneController {
 
         timeline.setOnFinished(event -> {
             System.out.println("Now thread has ended!");
+            stickLock=true;
             myStick.setLayoutX(myPillar1.getLayoutX()+myPillar1.getWidth());
             System.out.println(myPillar2.getLayoutY()+"  "+myStick.getHeight());
             System.out.println(myPillar2.getLayoutY()-myStick.getHeight());
@@ -372,9 +375,11 @@ public class SceneController {
 
         anchorPane.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.A) {
-                spaceBarPressed = true;
-                myStick.setOpacity(1);
-                increaseHeightTimeline.play();
+                if (stickLock){
+                    spaceBarPressed = true;
+                    myStick.setOpacity(1);
+                    increaseHeightTimeline.play();
+                }
             }
             else if(event.getCode() == KeyCode.UP){
 
@@ -387,39 +392,28 @@ public class SceneController {
 
         anchorPane.setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.A) {
-                spaceBarPressed = false;
-
-                // ht increase stopped
-                increaseHeightTimeline.stop();
-                double distanceNear = myPillar2.getLayoutX() -myPillar1.getWidth()- myPillar1.getLayoutX();
-                double distanceFar = myPillar2.getLayoutX()+myPillar2.getWidth()-(myPillar1.getLayoutX()+myPillar1.getWidth());
-                if (myStick.getHeight()>=distanceNear && myStick.getHeight()<=distanceFar){
-                    isAlive = true;
-                    aliveCnt++;
+               if(stickLock) {
+                   spaceBarPressed = false;
+                   // ht increase stopped
+                   increaseHeightTimeline.stop();
+                   double distanceNear = myPillar2.getLayoutX() - myPillar1.getWidth() - myPillar1.getLayoutX();
+                   double distanceFar = myPillar2.getLayoutX() + myPillar2.getWidth() - (myPillar1.getLayoutX() + myPillar1.getWidth());
+                   if (myStick.getHeight() >= distanceNear && myStick.getHeight() <= distanceFar) {
+                       isAlive = true;
+                       aliveCnt++;
 //                    myScore.setText(Integer.toString(aliveCnt));
-                    System.out.println(aliveCnt);
-                }
-                else{
-                    isAlive = false;
-                }
+                       System.out.println(aliveCnt);
+                   } else {
+                       isAlive = false;
+                   }
 
-                double d = (myPillar1.getLayoutX() + myPillar1.getWidth() - myStickHero.getLayoutX() -6) + myStick.getHeight();
+                   double d = (myPillar1.getLayoutX() + myPillar1.getWidth() - myStickHero.getLayoutX() - 6) + myStick.getHeight();
 //                TranslateTransition translateTransition1 = new TranslateTransition(Duration.seconds(2), myPillar1);
 //                translateTransition1.setByX(-1*d);
 //                TranslateTransition translateTransition2 = new TranslateTransition(Duration.seconds(2), myPillar2);
-//
-//
-//
-                rotateStick();
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-                System.out.println("Pillar height before:"+myPillar2.getLayoutY()+" "+ myPillar2.getY());
-
-                System.out.println("during"+myStickHero.getLayoutX());
-//                myStick.setOpacity(0);
+                   rotateStick();
+                   stickLock = false;
+               }
 
             }
             else if (event.getCode() == KeyCode.UP){

@@ -21,6 +21,7 @@ public class Main extends Application {
         System.out.println("heoooo");
         Parent root = FXMLLoader.load(getClass().getResource("startMenu.fxml"));
 
+
         Scene scene = new Scene(root);
         stage.setTitle("Hello!");
         stage.setHeight(420);

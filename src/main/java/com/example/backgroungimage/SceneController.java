@@ -84,24 +84,24 @@ public class SceneController {
         }
     }
     public static void writeCherryCnt(int chcnt) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\hp\\FinalAttack\\backgroungImage\\CherryCnt.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("CherryCnt.txt"))) {
             writer.write(String.valueOf(chcnt));
         }
     }
     public static int readCherryCnt() throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\hp\\FinalAttack\\backgroungImage\\CherryCnt.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("CherryCnt.txt"))) {
             String line = reader.readLine();
             return (line != null) ? Integer.parseInt(line) : 0;
         }
     }
 
     public static void writeScore(int chcnt) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\hp\\FinalAttack\\backgroungImage\\Score.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Score.txt"))) {
             writer.write(String.valueOf(chcnt));
         }
     }
     public static int readScore() throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\hp\\FinalAttack\\backgroungImage\\Score.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Score.txt"))) {
             String line = reader.readLine();
             return (line != null) ? Integer.parseInt(line) : 0;
         }
@@ -352,7 +352,7 @@ public class SceneController {
             timeline.stop();
         }
     }
-    public void stickDown(Rotate rotate)
+    private void stickDown(Rotate rotate)
     {
         int angle = (int) rotate.getAngle();
         angle ++;

@@ -1,7 +1,6 @@
 package com.example.backgroungimage;
 
-import javafx.fxml.FXML;
-import javafx.scene.image.ImageView;
+
 
 //Singleton class is being used here as we need only once instance of Hero to be there in the game.
 public class Hero extends GameObject{

@@ -1,6 +1,6 @@
 ************** HOW TO RUN THE PROJECT THIS PROJECT **************
-open the folder in terminal
-run command  mvn javafx:run
+ open the folder in terminal
+ run command  mvn javafx:run
 
 this command critically requires pomxml. And as per the announcement pomxml is not required this command might fail.
 Solution is to run through INTELLIJ PLAY BUTTON
@@ -17,53 +17,53 @@ Your goal is to guide the Stick Hero through the obstacles, consisting of pillar
 
 ## Controls
 
-- *Space Bar (A key):* Hold to extend the stick, release to stop.
+- **Space Bar (A key):** Hold to extend the stick, release to stop.
     - The height of the stick determines the distance between pillars.
-- *Up Arrow Key:* Move the hero upwards.
-- *Down Arrow Key:* Move the hero downwards.
+- **Up Arrow Key:** Move the hero upwards.
+- **Down Arrow Key:** Move the hero downwards.
 
 ## Gameplay
 
-1. *Pillars:*
+1. **Pillars:**
     - Navigate through the pillars by extending the stick at the right moment.
     - The gap between pillars varies, so adjust the stick height accordingly.
 
-2. *Cherries:*
+2. **Cherries:**
     - Collect cherries to increase your score.
     - Cherries are strategically placed between or near pillars.
 
-3. *Timing:*
+3. **Timing:**
     - Precise timing is crucial to successfully cross the gaps.
     - Extend the stick too early or too late, and the Stick Hero may fall.
 
-4. *Obstacles:*
+4. **Obstacles:**
     - Watch out for falling obstacles and other challenges.
     - Colliding with obstacles may result in a decrease in score or the end of the game.
 
 ## Scoring
 
-- *Score:*
+- **Score:**
     - Earn points for successfully crossing pillars.
     - Collect cherries for additional points.
     - The longer the distance between pillars, the higher the score.
--  *Cherries:*
+-  **Cherries:**
     - Cherries can be used to revive.
-
+    
 
 ## Challenges
 
-- *Stick Length:*
+- **Stick Length:**
     - Managing the stick length is essential. Extend it wisely to conquer varying pillar distances.
 
-- *Timing is Key:*
+- **Timing is Key:**
     - Master the art of timing to ensure successful pillar crossings.
 
-- *Avoid Collisions:*
+- **Avoid Collisions:**
     - Collisions with pillars or obstacles may lead to a score deduction or game over.
 
 ## High Score
 
-- *Beat Your Record:*
+- **Beat Your Record:**
     - The game keeps track of your high score.
     - Challenge yourself to surpass your previous best.
 

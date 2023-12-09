@@ -55,6 +55,10 @@ public class SceneController {
     private boolean isSPressed = false;
     RotateTransition flipTransition;
     Timeline heroDrops;
+    private boolean isCherry =false;
+    private int cherryCount=0;
+    @FXML
+    private Text myCherryCnt;
 
 
     //    public void createStick() throws IOException {
@@ -62,7 +66,11 @@ public class SceneController {
 ////        Parent root = FXMLLoader.load(getClass().getResource("Scene2.fxml"));
 //        stick = new Rectangle(10, 50, Color.BLACK); // Initial dimensions, adjust as needed
 //        anchorPane.getChildren().add(stick);
+
 //    }
+
+
+
     private static void writeHighScore(int newHighScore) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("HScore.txt"))) {
             writer.write(String.valueOf(newHighScore));
@@ -174,6 +182,10 @@ public class SceneController {
                 myStick.setOpacity(0);
                 System.out.println("Pillar height:" + myPillar2.getLayoutY() + myPillar2.getY());
                 rotate.setAngle(0);
+                if (isCherry){
+                    cherryCount++;
+                }
+                isCherry=false;
                 pullBack();
             }
             else{
@@ -451,6 +463,23 @@ public class SceneController {
 //
 //        timeline.play();
 //    }
+    AnimationTimer cherryEatingTimer = new AnimationTimer(){
+        @Override
+        public void handle(long l){
+            cherryCollision();
+        }
+    };
+    private void cherryCollision(){
+        Shape playerShape = new Rectangle(myStickHero.getLayoutX(), myStickHero.getLayoutY(), myStickHero.getBoundsInParent().getWidth(), myStickHero.getBoundsInParent().getHeight());
+        Shape cherryShape = new Rectangle(cherry.getLayoutX(),cherry.getLayoutY(),cherry.getBoundsInParent().getWidth(),cherry.getBoundsInParent().getHeight());
+
+        if (playerShape.getBoundsInParent().intersects(cherryShape.getBoundsInParent())){
+            isCherry=true;
+            cherry.setOpacity(0);
+            System.out.println("Cherry count: "+cherryCount);
+        }
+
+    }
     AnimationTimer collisionTimer = new AnimationTimer(){
         @Override
         public void handle(long l) {
@@ -512,6 +541,7 @@ public class SceneController {
 
         anchorPane.getChildren().add(mediaView);
         collisionTimer.start();
+        cherryEatingTimer.start();
 
     }
     //    public void switchToScene2(ActionEvent e) throws IOException

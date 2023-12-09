@@ -18,6 +18,8 @@ public class GameOverController {
     public Text myScore;
     @FXML
     public Text myScore1;
+    @FXML
+    public Text myGameOverCherry;
 
     private Stage stage;
     private Scene scene;

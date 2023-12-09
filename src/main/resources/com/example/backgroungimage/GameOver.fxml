@@ -20,18 +20,16 @@
             <Font name="Chiller" size="125.0" />
          </font>
       </Label>
-      <Button layoutX="215.0" layoutY="265.0" mnemonicParsing="false" onAction="#switchToGame" opacity="0.0" prefHeight="67.0" prefWidth="67.0" text="Button" />
-      <ImageView fitHeight="67.0" fitWidth="135.0" layoutX="282.0" layoutY="265.0" onMouseClicked="#switchToGame" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@img.png" />
-         </image>
-      </ImageView>
-      <Label layoutX="73.0" layoutY="182.0" prefHeight="79.0" prefWidth="148.0" text="SCORE-">
+      <Button layoutX="172.0" layoutY="283.0" mnemonicParsing="false" onAction="#switchToGame" prefHeight="51.0" prefWidth="99.0" style="-fx-background-radius: 11; -fx-background-color: black;" text="RETRY" textFill="WHITE">
+         <font>
+            <Font name="Algerian" size="22.0" />
+         </font></Button>
+      <Label fx:id="nothing" layoutX="73.0" layoutY="182.0" prefHeight="79.0" prefWidth="148.0" text="SCORE-">
          <font>
             <Font name="Chiller" size="55.0" />
          </font>
       </Label>
-      <Text layoutX="222.0" layoutY="232.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1" wrappingWidth="67.0">
+      <Text fx:id="myScore" layoutX="222.0" layoutY="232.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" wrappingWidth="67.0">
          <font>
             <Font name="Chiller" size="37.0" />
          </font>
@@ -41,5 +39,15 @@
             <Font name="Chiller" size="55.0" />
          </font>
       </Label>
+      <Button layoutX="326.0" layoutY="287.0" mnemonicParsing="false" onAction="#switchToHome" prefHeight="43.0" prefWidth="99.0" style="-fx-background-radius: 11; -fx-background-color: black;" text="Home" textFill="WHITE">
+         <font>
+            <Font name="Algerian" size="22.0" />
+         </font>
+      </Button>
+      <Text fx:id="myScore1" layoutX="541.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" wrappingWidth="67.0">
+         <font>
+            <Font name="Chiller" size="37.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

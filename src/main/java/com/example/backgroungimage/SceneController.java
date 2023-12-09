@@ -17,7 +17,7 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.IOException;
+import java.io.*;
 
 public class SceneController {
     Rotate rotate;
@@ -37,6 +37,7 @@ public class SceneController {
     private Scene scene;
     private Parent root;
     private boolean spaceBarPressed = false;
+    private int myHighScore;
 
     @FXML
     private AnchorPane anchorPane;
@@ -50,10 +51,59 @@ public class SceneController {
 //        stick = new Rectangle(10, 50, Color.BLACK); // Initial dimensions, adjust as needed
 //        anchorPane.getChildren().add(stick);
 //    }
+    private static void writeHighScore(int newHighScore) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("HScore.txt"))) {
+            writer.write(String.valueOf(newHighScore));
+        }
+    }
+    private static int readHighScore() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader("HScore.txt"))) {
+            String line = reader.readLine();
+            return (line != null) ? Integer.parseInt(line) : 0;
+        }
+    }
+
+    public static int updateHighScore(int currentScore) {
+        int highScore = 0;
+        try {
+            // Read the current high score from the file
+            highScore = readHighScore();
+
+            // Compare the current score with the high score
+            if (currentScore > highScore) {
+
+                // If the current score is greater, update the high score in the file
+                System.out.println("update"+ highScore);
+                writeHighScore(currentScore);
+                System.out.println("Congratulations! New high score: " + currentScore);
+                highScore = currentScore;
+            } else {
+                System.out.println("not updated"+ highScore);
+                System.out.println("Current score is not higher than the existing high score.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading or writing high score: " + e.getMessage());
+        }
+        finally
+        {
+            return highScore;
+        }
+    }
 
     public void switchToGameOver(ActionEvent e) throws IOException
     {
-        Parent root = FXMLLoader.load(getClass().getResource("GameOver.fxml"));
+//        Parent root = FXMLLoader.load(getClass().getResource("GameOver.fxml"));
+
+        myHighScore = updateHighScore(aliveCnt);
+
+//        GameOverController.score = aliveCnt;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("GameOver.fxml"));
+        root = loader.load();
+        GameOverController g = loader.getController();
+        String sc =Integer.toString(aliveCnt);
+        g.setGameScore(sc);
+        g.setGameHighScore(Integer.toString(myHighScore));
+
 
         // Get the stage from the event's source
         Stage stage = (Stage) anchorPane.getScene().getWindow();
@@ -110,7 +160,9 @@ public class SceneController {
                 }));
                 stickFalling.setOnFinished(e -> {
                     try {
+
                         switchToGameOver(e);
+
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -122,6 +174,7 @@ public class SceneController {
           heroMarching.play();
     }
     public void pullBack() {
+
 
         Rectangle newPillar1 = createPillar();
 
